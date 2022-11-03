@@ -50,6 +50,7 @@ public class ClienteDao {
             while(rs.next()){
                 Cliente cliente = new Cliente();
                 
+                cliente.setId(rs.getInt("id"));
                 cliente.setNome(rs.getString("nome"));
                 cliente.setTelefone(rs.getString("telefone"));
                 cliente.setCpf(rs.getString("cpf"));
@@ -63,5 +64,60 @@ public class ClienteDao {
         return lista;
         
       }
+    
+    public ArrayList<Cliente> pesquisarCliente(String desc){
+       String sql = "select * from cliente where nome like '%"+desc+"%'" ;
+       
+        try {
+            stm = conexao.prepareStatement(sql);
+            rs = stm.executeQuery();
+            
+            while(rs.next()){
+                Cliente cliente = new Cliente();
+                cliente.setId(rs.getInt("id"));
+                cliente.setNome(rs.getString("nome"));
+                cliente.setTelefone(rs.getString("telefone"));
+                cliente.setCpf(rs.getString("cpf"));
+                cliente.setEmail(rs.getString("email"));
+                
+                lista.add(cliente);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro em listar cliente" + e);
+        }
+        return lista;
+        
+      }
+    
+    public void excluirCliente(Cliente cliente){
+        String sql = "delete from cliente where id = ?";
+        try {
+            stm = conexao.prepareStatement(sql);
+            stm.setInt(1, cliente.getId());
+            stm.execute();
+            stm.close();
+        } catch (Exception e) {
+        }
+    }
+    
+    public void atualizarCliente(Cliente cliente){
+        String sql = "update cliente set nome = ?,telefone = ?, cpf = ?, email = ? where id=?";
+        
+        try {
+            stm = conexao.prepareStatement(sql);
+            stm.setString(1, cliente.getNome());
+            stm.setString(2, cliente.getTelefone());
+            stm.setString(3, cliente.getCpf());
+            stm.setString(4, cliente.getEmail());
+            stm.setInt(5, cliente.getId());
+            stm.execute();
+            stm.close();
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Cadastrar aluno"+e);
+        }
+    }
+    
+    
     
 }
